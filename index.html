@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Packing List | لیست بسته‌بندی</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
+
+  :root {
+    --primary: #1a2744;
+    --accent: #c8a96e;
+    --bg: #f5f3ef;
+    --card: #ffffff;
+    --border: #d4cfc7;
+    --text: #1a1a1a;
+    --muted: #6b6560;
+    --success: #2d7a4f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--primary);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  header h1 {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  header span {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 300;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--primary);
+    padding: 0 12px 12px;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    background: transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .field-row.single { grid-template-columns: 1fr; }
+  .field-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  input, select, textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: #faf9f7;
+    width: 100%;
+    transition: border 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+
+  textarea { min-height: 70px; resize: vertical; }
+
+  .logo-upload {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-upload:hover { border-color: var(--accent); }
+
+  .logo-upload img {
+    max-height: 70px;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .logo-upload p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .logo-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .logo-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Items table */
+  .items-header {
+    display: grid;
+    grid-template-columns: 36px 1fr 1.5fr 0.8fr 60px 60px 60px;
+    gap: 4px;
+    padding: 8px 4px;
+    background: var(--primary);
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+
+  .items-header span {
+    color: rgba(255,255,255,0.8);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .item-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 1.5fr 0.8fr 60px 60px 60px;
+    gap: 4px;
+    margin-bottom: 5px;
+    align-items: center;
+  }
+
+  .item-row input {
+    padding: 8px 6px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .item-num {
+    background: var(--primary);
+    color: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: none;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: var(--primary);
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-group .btn { flex: 1; min-width: 120px; }
+
+  .packing-checks {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Preview */
+  #preview-content {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    line-height: 1.6;
+    direction: ltr;
+    text-align: left;
+  }
+
+  #preview-content h2 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--primary);
+  }
+
+  .preview-header-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .preview-header-logos img {
+    max-height: 60px;
+    max-width: 120px;
+    object-fit: contain;
+  }
+
+  .preview-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary);
+  }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
+    margin-bottom: 10px;
+  }
+
+  .preview-field {
+    display: flex;
+    gap: 4px;
+    font-size: 11px;
+    padding: 3px 0;
+    border-bottom: 1px dashed #e0ddd8;
+  }
+
+  .preview-field strong { color: var(--primary); white-space: nowrap; }
+
+  .preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 10px;
+  }
+
+  .preview-table th {
+    background: var(--primary);
+    color: white;
+    padding: 6px 4px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .preview-table td {
+    border: 1px solid var(--border);
+    padding: 5px 4px;
+    text-align: center;
+  }
+
+  .preview-table tr:nth-child(even) td { background: #f8f7f5; }
+
+  .preview-signers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .signer-box {
+    text-align: center;
+    width: 30%;
+  }
+
+  .signer-box .line {
+    border-top: 1px solid #999;
+    margin: 30px 0 6px;
+  }
+
+  .signer-box p { font-size: 10px; color: var(--muted); }
+
+  .badge {
+    display: inline-block;
+    background: #e8f5ee;
+    color: var(--success);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  @media print {
+    header, .tabs, .page:not(#page-preview), .btn-group { display: none !important; }
+    #page-preview { display: block !important; }
+    #preview-content { border: none; padding: 0; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📦 Packing List</h1>
+    <span>لیست بسته‌بندی</span>
+  </div>
+  <div style="font-size:11px; color:var(--accent);" id="current-date"></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('header')">سربرگ / Header</button>
+  <button class="tab" onclick="showTab('delivery')">تحویل / Delivery</button>
+  <button class="tab" onclick="showTab('contract')">قرارداد / Contract</button>
+  <button class="tab" onclick="showTab('packing')">بسته‌بندی / Packing</button>
+  <button class="tab" onclick="showTab('items')">اقلام / Items</button>
+  <button class="tab" onclick="showTab('preview')">پیش‌نمایش / Preview</button>
+</div>
+
+<!-- TAB 1: Header -->
+<div id="page-header" class="page active">
+  <div class="card">
+    <div class="card-title">لوگوها / Logos</div>
+    <div class="logo-row">
+      <div>
+        <label style="display:block; margin-bottom:6px; font-size:10px; color:var(--muted);">لوگوی شرکت / Company Logo</label>
+        <div class="logo-upload" id="company-logo-box">
+          <img id="company-logo-preview" src="" alt="" style="display:none;">
+          <p id="company-logo-text">ضربه بزنید برای آپلود</p>
+          <input type="file" accept="image/*" onchange="loadLogo(this, 'company')">
+        </div>
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:6px; font-size:10px; color:var(--muted);">لوگوی کارفرما / Client Logo</label>
+        <div class="logo-upload" id="client-logo-box">
+          <img id="client-logo-preview" src="" alt="" style="display:none;">
+          <p id="client-logo-text">ضربه بزنید برای آپلود</p>
+          <input type="file" accept="image/*" onchange="loadLogo(this, 'client')">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">اطلاعات سند / Document Info</div>
+    <div class="field-row">
+      <div class="field">
+        <label>شماره پروژه / Project No</label>
+        <input type="text" id="project-no" value="P001" placeholder="P001">
+      </div>
+      <div class="field">
+        <label>شماره سند / Document No</label>
+        <input type="text" id="doc-no" placeholder="DOC-001">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>تاریخ صدور / Issued Date (شمسی)</label>
+        <input type="text" id="issued-date" placeholder="۱۴۰۴/۱۲/۰۳">
+      </div>
+      <div class="field">
+        <label>ویرایش / Revision</label>
+        <input type="text" id="revision" value="0" placeholder="0">
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>صفحه / Page</label>
+        <input type="text" id="page-info" value="1 of 1" placeholder="1 of 1">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: Delivery -->
+<div id="page-delivery" class="page">
+  <div class="card">
+    <div class="card-title">اطلاعات تحویل / Delivery Description</div>
+    <div class="field-row single">
+      <div class="field">
+        <label>آدرس / Address</label>
+        <textarea id="delivery-address" placeholder="آدرس تحویل..."></textarea>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>نام مسئول / Contact Person</label>
+        <input type="text" id="contact-person" placeholder="نام و نام خانوادگی">
+      </div>
+      <div class="field">
+        <label>تلفن / Phone No</label>
+        <input type="tel" id="phone-no" placeholder="+98...">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: Contract -->
+<div id="page-contract" class="page">
+  <div class="card">
+    <div class="card-title">اطلاعات قرارداد / Contract Description</div>
+    <div class="field-row">
+      <div class="field">
+        <label>کارفرما / Client</label>
+        <input type="text" id="client-name" placeholder="نام شرکت">
+      </div>
+      <div class="field">
+        <label>شماره آیتم / Item No</label>
+        <input type="text" id="item-no" placeholder="ITEM-001">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>نام پروژه / Name of Project</label>
+        <input type="text" id="project-name" placeholder="عنوان پروژه">
+      </div>
+      <div class="field">
+        <label>شناسه / Designation</label>
+        <input type="text" id="designation" placeholder="...">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>شماره T / T No</label>
+        <input type="text" id="t-no" placeholder="T-001">
+      </div>
+      <div class="field">
+        <label>تعداد سفارش / Ordered QTY</label>
+        <input type="number" id="ordered-qty" placeholder="0">
+      </div>
+    </div>
+    <div class="field-row single">
+      <div class="field">
+        <label>شرایط تحویل / Incoterms</label>
+        <select id="incoterms">
+          <option>EXW (EX-Work)</option>
+          <option>FOB</option>
+          <option>CIF</option>
+          <option>CFR</option>
+          <option>DAP</option>
+          <option>DDP</option>
+          <option>FCA</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: Packing -->
+<div id="page-packing" class="page">
+  <div class="card">
+    <div class="card-title">نوع بسته‌بندی / Type of Packing</div>
+    <div class="packing-checks">
+      <label class="check-item">
+        <input type="checkbox" id="pack-wooden"> Wooden box/pallet
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="pack-metal"> Metal pallet
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="pack-carton"> Carton box
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="pack-other"> Other
+      </label>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">ابعاد و وزن / Dimensions & Weight</div>
+    <div class="field-row triple">
+      <div class="field">
+        <label>طول / Length (mm)</label>
+        <input type="number" id="length" placeholder="0">
+      </div>
+      <div class="field">
+        <label>عرض / Width (mm)</label>
+        <input type="number" id="width" placeholder="0">
+      </div>
+      <div class="field">
+        <label>ارتفاع / Height (mm)</label>
+        <input type="number" id="height" placeholder="0">
+      </div>
+    </div>
+    <div class="field-row triple">
+      <div class="field">
+        <label>وزن خالص / Net Weight (kg)</label>
+        <input type="number" id="net-weight" placeholder="0">
+      </div>
+      <div class="field">
+        <label>وزن ناخالص / Gross Weight (kg)</label>
+        <input type="number" id="gross-weight" placeholder="0">
+      </div>
+      <div class="field">
+        <label>حجم / Cubic (m³)</label>
+        <input type="number" id="cubic" placeholder="0" step="0.001">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: Items -->
+<div id="page-items" class="page">
+  <div class="card">
+    <div class="card-title">اقلام / Items</div>
+    <div class="items-header">
+      <span>No</span>
+      <span>Part No</span>
+      <span>Description</span>
+      <span>Material</span>
+      <span>QTY</span>
+      <span>Unit</span>
+      <span>Remark</span>
+    </div>
+    <div id="items-list"></div>
+    <button class="btn btn-outline" onclick="addItem()" style="width:100%; margin-top:10px;">
+      ➕ افزودن ردیف / Add Row
+    </button>
+  </div>
+</div>
+
+<!-- TAB 6: Preview -->
+<div id="page-preview" class="page">
+  <div class="badge">✓ پیش‌نمایش آماده</div>
+  <div id="preview-content"></div>
+  <div class="btn-group" style="margin-top:16px;">
+    <button class="btn btn-primary" onclick="generateDoc()">⬇ دانلود DOC</button>
+    <button class="btn btn-accent" onclick="window.print()">🖨 پرینت / Print</button>
+  </div>
+</div>
+
+<script>
+// ---- Jalali Date ----
+function toJalali(gy, gm, gd) {
+  const g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy=(gy<=1600)?(gy-621):(gy-621);
+  let gy2=(gm>2)?(gy+1):gy;
+  let days=(365*gy)+(Math.floor((gy2+3)/4))-(Math.floor((gy2+99)/100))+(Math.floor((gy2+399)/400))-80+gd+g_d_m[gm-1];
+  jy+=33*Math.floor(days/12053);
+  days%=12053;
+  jy+=4*Math.floor(days/1461);
+  days%=1461;
+  if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365;}
+  const jm=(days<186)?Math.ceil(days/31):Math.ceil((days-6)/30);
+  const jd=(days<186)?(days-31*(jm-1)):(days-30*jm-6);
+  return {jy,jm,jd};
+}
+
+function getJalaliToday() {
+  const now = new Date();
+  const j = toJalali(now.getFullYear(), now.getMonth()+1, now.getDate());
+  const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  return `${toFa(j.jy)}/${toFa(String(j.jm).padStart(2,'0'))}/${toFa(String(j.jd).padStart(2,'0'))}`;
+}
+
+// Init
+document.getElementById('current-date').textContent = getJalaliToday();
+document.getElementById('issued-date').value = getJalaliToday();
+
+// ---- Logos ----
+let logos = { company: '', client: '' };
+
+function loadLogo(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    logos[type] = e.target.result;
+    document.getElementById(`${type}-logo-preview`).src = e.target.result;
+    document.getElementById(`${type}-logo-preview`).style.display = 'block';
+    document.getElementById(`${type}-logo-text`).style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---- Tabs ----
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'preview') buildPreview();
+}
+
+// ---- Items ----
+let itemCount = 0;
+
+function addItem() {
+  itemCount++;
+  const list = document.getElementById('items-list');
+  const row = document.createElement('div');
+  row.className = 'item-row';
+  row.id = `item-${itemCount}`;
+  row.innerHTML = `
+    <div class="item-num">${itemCount}</div>
+    <input type="text" placeholder="Part No" data-field="part">
+    <input type="text" placeholder="Description" data-field="desc">
+    <input type="text" placeholder="Material" data-field="mat">
+    <input type="number" placeholder="0" data-field="qty" min="0">
+    <input type="text" placeholder="PCS" data-field="unit">
+    <input type="text" placeholder="..." data-field="remark">
+  `;
+  list.appendChild(row);
+}
+
+function getItems() {
+  const rows = document.querySelectorAll('.item-row');
+  return Array.from(rows).map((row, i) => ({
+    no: i + 1,
+    part: row.querySelector('[data-field="part"]').value,
+    desc: row.querySelector('[data-field="desc"]').value,
+    mat: row.querySelector('[data-field="mat"]').value,
+    qty: row.querySelector('[data-field="qty"]').value,
+    unit: row.querySelector('[data-field="unit"]').value,
+    remark: row.querySelector('[data-field="remark"]').value,
+  }));
+}
+
+function val(id) { return document.getElementById(id)?.value || ''; }
+
+// ---- Pack Types ----
+function getPackTypes() {
+  const checks = [
+    {id:'pack-wooden', label:'Wooden box/pallet'},
+    {id:'pack-metal', label:'Metal pallet'},
+    {id:'pack-carton', label:'Carton box'},
+    {id:'pack-other', label:'Other'},
+  ];
+  return checks.filter(c => document.getElementById(c.id)?.checked).map(c => c.label).join(', ') || '-';
+}
+
+// ---- Preview ----
+function buildPreview() {
+  const items = getItems();
+  const itemRows = items.map(it => `
+    <tr>
+      <td>${it.no}</td>
+      <td>${it.part}</td>
+      <td style="text-align:left;">${it.desc}</td>
+      <td>${it.mat}</td>
+      <td>${it.qty}</td>
+      <td>${it.unit}</td>
+      <td>${it.remark}</td>
+    </tr>`).join('');
+
+  let companyLogoHTML = logos.company ? `<img src="${logos.company}" alt="Company Logo">` : '<span style="color:#ccc;font-size:10px;">Company Logo</span>';
+  let clientLogoHTML = logos.client ? `<img src="${logos.client}" alt="Client Logo">` : '<span style="color:#ccc;font-size:10px;">Client Logo</span>';
+
+  document.getElementById('preview-content').innerHTML = `
+    <div class="preview-header-logos">
+      ${companyLogoHTML}
+      <div class="preview-title">Packing List<br><span style="font-size:11px;font-weight:normal;color:#666;">لیست بسته‌بندی</span></div>
+      ${clientLogoHTML}
+    </div>
+
+    <div class="preview-grid">
+      <div class="preview-field"><strong>Project No:</strong> ${val('project-no')}</div>
+      <div class="preview-field"><strong>Document No:</strong> ${val('doc-no')}</div>
+      <div class="preview-field"><strong>Issued Date / تاریخ:</strong> ${val('issued-date')}</div>
+      <div class="preview-field"><strong>Revision:</strong> ${val('revision')}</div>
+      <div class="preview-field"><strong>Page:</strong> ${val('page-info')}</div>
+    </div>
+
+    <div style="border-top:2px solid #1a2744; margin:10px 0; padding-top:8px;">
+      <strong style="color:#1a2744; font-size:10px; letter-spacing:1px;">DELIVERY DESCRIPTION / اطلاعات تحویل</strong>
+    </div>
+    <div class="preview-grid">
+      <div class="preview-field" style="grid-column:1/-1;"><strong>Address / آدرس:</strong> ${val('delivery-address')}</div>
+      <div class="preview-field"><strong>Contact / مسئول:</strong> ${val('contact-person')}</div>
+      <div class="preview-field"><strong>Phone / تلفن:</strong> ${val('phone-no')}</div>
+    </div>
+
+    <div style="border-top:2px solid #1a2744; margin:10px 0; padding-top:8px;">
+      <strong style="color:#1a2744; font-size:10px; letter-spacing:1px;">CONTRACT DESCRIPTION / اطلاعات قرارداد</strong>
+    </div>
+    <div class="preview-grid">
+      <div class="preview-field"><strong>Client / کارفرما:</strong> ${val('client-name')}</div>
+      <div class="preview-field"><strong>Item No:</strong> ${val('item-no')}</div>
+      <div class="preview-field"><strong>Project Name / پروژه:</strong> ${val('project-name')}</div>
+      <div class="preview-field"><strong>Designation:</strong> ${val('designation')}</div>
+      <div class="preview-field"><strong>T No:</strong> ${val('t-no')}</div>
+      <div class="preview-field"><strong>Ordered QTY / تعداد:</strong> ${val('ordered-qty')}</div>
+      <div class="preview-field" style="grid-column:1/-1;"><strong>Incoterms:</strong> ${val('incoterms')}</div>
+    </div>
+
+    <div style="border-top:2px solid #1a2744; margin:10px 0; padding-top:8px;">
+      <strong style="color:#1a2744; font-size:10px; letter-spacing:1px;">PACKING DESCRIPTION / اطلاعات بسته‌بندی</strong>
+    </div>
+    <div class="preview-grid">
+      <div class="preview-field"><strong>Net Weight / وزن خالص:</strong> ${val('net-weight')} kg</div>
+      <div class="preview-field"><strong>Gross Weight / وزن ناخالص:</strong> ${val('gross-weight')} kg</div>
+      <div class="preview-field"><strong>Cubic / حجم:</strong> ${val('cubic')} m³</div>
+      <div class="preview-field"><strong>Type / نوع:</strong> ${getPackTypes()}</div>
+      <div class="preview-field"><strong>L×W×H (mm):</strong> ${val('length')} × ${val('width')} × ${val('height')}</div>
+    </div>
+
+    <table class="preview-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Part Number</th>
+          <th>Description / شرح</th>
+          <th>Material / ماده</th>
+          <th>QTY / تعداد</th>
+          <th>Unit / واحد</th>
+          <th>Remark / توضیح</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemRows || '<tr><td colspan="7" style="color:#ccc;padding:20px;">No items added / آیتمی وارد نشده</td></tr>'}
+      </tbody>
+    </table>
+
+    <div class="preview-signers">
+      <div class="signer-box">
+        <div class="line"></div>
+        <p>ASAROLL Co.<br>آسارول</p>
+      </div>
+      <div class="signer-box">
+        <div class="line"></div>
+        <p>Third Party Inspection<br>بازرس شخص ثالث</p>
+      </div>
+      <div class="signer-box">
+        <div class="line"></div>
+        <p>Client / Owner<br>کارفرما</p>
+      </div>
+    </div>
+  `;
+}
+
+// ---- Generate DOC ----
+function generateDoc() {
+  const items = getItems();
+  const packTypes = getPackTypes();
+
+  let itemRowsHtml = items.map(it => `
+    <tr>
+      <td style="border:1px solid #ccc;padding:4px;text-align:center;">${it.no}</td>
+      <td style="border:1px solid #ccc;padding:4px;">${it.part}</td>
+      <td style="border:1px solid #ccc;padding:4px;">${it.desc}</td>
+      <td style="border:1px solid #ccc;padding:4px;">${it.mat}</td>
+      <td style="border:1px solid #ccc;padding:4px;text-align:center;">${it.qty}</td>
+      <td style="border:1px solid #ccc;padding:4px;text-align:center;">${it.unit}</td>
+      <td style="border:1px solid #ccc;padding:4px;">${it.remark}</td>
+    </tr>`).join('');
+
+  const compLogo = logos.company ? `<img src="${logos.company}" style="max-height:60px;max-width:120px;">` : '';
+  const cliLogo = logos.client ? `<img src="${logos.client}" style="max-height:60px;max-width:120px;">` : '';
+
+  const docContent = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset='utf-8'><title>Packing List</title>
+    <style>
+      body { font-family: Arial, sans-serif; font-size:10pt; margin:20px; }
+      table { border-collapse: collapse; width: 100%; }
+      th { background:#1a2744; color:white; padding:6px 4px; text-align:center; }
+      h2 { text-align:center; color:#1a2744; }
+      .section-title { font-weight:bold; color:#1a2744; border-bottom:2px solid #1a2744; padding:4px 0; margin:10px 0 6px; font-size:9pt; letter-spacing:1px; }
+      .info-table td { padding:3px 6px; font-size:9pt; border-bottom:1px dashed #e0ddd8; }
+      .info-table td:first-child { font-weight:bold; color:#1a2744; white-space:nowrap; }
+      .signers td { text-align:center; padding:40px 20px 6px; border-top:1px solid #ccc; font-size:9pt; color:#666; }
+    </style>
+    </head>
+    <body>
+      <table style="margin-bottom:16px; border:none;">
+        <tr>
+          <td style="border:none; width:150px;">${compLogo}</td>
+          <td style="border:none; text-align:center;"><h2 style="margin:0;">Packing List<br><span style="font-size:10pt;font-weight:normal;">لیست بسته‌بندی</span></h2></td>
+          <td style="border:none; text-align:right; width:150px;">${cliLogo}</td>
+        </tr>
+      </table>
+
+      <table class="info-table" style="margin-bottom:8px;border:none;">
+        <tr>
+          <td>Project No / شماره پروژه:</td><td>${val('project-no')}</td>
+          <td>Document No / شماره سند:</td><td>${val('doc-no')}</td>
+        </tr>
+        <tr>
+          <td>Issued Date / تاریخ:</td><td>${val('issued-date')}</td>
+          <td>Revision / ویرایش:</td><td>${val('revision')}</td>
+        </tr>
+        <tr>
+          <td>Page / صفحه:</td><td colspan="3">${val('page-info')}</td>
+        </tr>
+      </table>
+
+      <div class="section-title">DELIVERY DESCRIPTION / اطلاعات تحویل</div>
+      <table class="info-table" style="border:none;">
+        <tr><td>Address / آدرس:</td><td colspan="3">${val('delivery-address')}</td></tr>
+        <tr>
+          <td>Contact Person / مسئول:</td><td>${val('contact-person')}</td>
+          <td>Phone / تلفن:</td><td>${val('phone-no')}</td>
+        </tr>
+      </table>
+
+      <div class="section-title">CONTRACT DESCRIPTION / اطلاعات قرارداد</div>
+      <table class="info-table" style="border:none;">
+        <tr>
+          <td>Client / کارفرما:</td><td>${val('client-name')}</td>
+          <td>Item No / آیتم:</td><td>${val('item-no')}</td>
+        </tr>
+        <tr>
+          <td>Name of Project / پروژه:</td><td>${val('project-name')}</td>
+          <td>Designation:</td><td>${val('designation')}</td>
+        </tr>
+        <tr>
+          <td>T No:</td><td>${val('t-no')}</td>
+          <td>Ordered QTY / تعداد:</td><td>${val('ordered-qty')}</td>
+        </tr>
+        <tr><td>Incoterms:</td><td colspan="3">${val('incoterms')}</td></tr>
+      </table>
+
+      <div class="section-title">PACKING DESCRIPTION / اطلاعات بسته‌بندی</div>
+      <table class="info-table" style="border:none;">
+        <tr>
+          <td>Net Weight / وزن خالص:</td><td>${val('net-weight')} kg</td>
+          <td>Gross Weight / وزن ناخالص:</td><td>${val('gross-weight')} kg</td>
+        </tr>
+        <tr>
+          <td>Cubic / حجم:</td><td>${val('cubic')} m³</td>
+          <td>Type of Packing / نوع:</td><td>${packTypes}</td>
+        </tr>
+        <tr>
+          <td>L / طول (mm):</td><td>${val('length')}</td>
+          <td>W / عرض (mm):</td><td>${val('width')}</td>
+        </tr>
+        <tr>
+          <td>H / ارتفاع (mm):</td><td>${val('height')}</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+
+      <br>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Part Number</th>
+            <th>Description / شرح</th>
+            <th>Material / ماده</th>
+            <th>QTY / تعداد</th>
+            <th>Unit / واحد</th>
+            <th>Remark / توضیح</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemRowsHtml || '<tr><td colspan="7" style="text-align:center;border:1px solid #ccc;padding:8px;">No items</td></tr>'}
+        </tbody>
+      </table>
+
+      <br><br>
+      <table class="signers" style="width:100%; border:none;">
+        <tr>
+          <td>ASAROLL Co.<br>آسارول</td>
+          <td>Third Party Inspection<br>بازرس شخص ثالث</td>
+          <td>Client / Owner<br>کارفرما</td>
+        </tr>
+      </table>
+    </body></html>`;
+
+  const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PackingList_${val('project-no') || 'P001'}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Init first item
+addItem();
+</script>
+</body>
+</html>
